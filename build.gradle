@@ -17,7 +17,10 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	implementation 'com.h2database:h2'
 	implementation 'org.jetbrains:annotations:20.1.0'
-	implementation('org.springframework.session:spring-session-jdbc')
+	/*implementation 'org.springframework.session:spring-session-jdbc'*/
+	/*mybatis*/
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+	/*test*/
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
