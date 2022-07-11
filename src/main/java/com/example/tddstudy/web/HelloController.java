@@ -13,6 +13,8 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello() throws Exception{
-        return helloService.HellloNow();
+        String today = helloService.HellloNow();
+        System.out.println(today);
+        return today;
     }
 }
