@@ -14,7 +14,7 @@ public class HelloController {
     @GetMapping("/hello")
     public String hello() throws Exception{
         String today = helloService.HellloNow();
-        System.out.println(today);
+        //System.out.println(today);
         return today;
     }
 }
