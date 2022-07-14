@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Membership {
     private Long id;
-    private String membershipName;
+    private MembershipType membershipName;
     private String userId;
     private int point;
 
     @Builder
-    public Membership(String membershipName, String userId, int point) {
+    public Membership(MembershipType membershipName, String userId, int point) {
         this.membershipName = membershipName;
         this.userId = userId;
         this.point = point;

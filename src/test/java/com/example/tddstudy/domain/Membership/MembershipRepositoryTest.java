@@ -1,12 +1,17 @@
 package com.example.tddstudy.domain.Membership;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.lang.reflect.Member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+//@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class MembershipRepositoryTest {
 
@@ -18,7 +23,7 @@ public class MembershipRepositoryTest {
         //given
         final Membership membership = Membership.builder()
                 .userId("id")
-                .membershipName("네이버")
+                .membershipName(MembershipType.NAVER)
                 .point(10000)
                 .build();
 
@@ -27,6 +32,25 @@ public class MembershipRepositoryTest {
 
         //then
         assertThat(resultCnt).isEqualTo(1);
+
+    }
+
+    @Test
+    void 맴버쉽이_존재하는지_테스트() {
+        //given
+        final Membership membership = Membership.builder()
+                .userId("id")
+                .membershipName(MembershipType.NAVER)
+                .point(10000)
+                .build();
+
+        final Membership findResult = membershipRepository.findByUserIdAndMembershipType("id", MembershipType.NAVER);
+
+        assertThat(findResult).isNotNull();
+        assertThat(findResult.getId()).isNotNull();
+        assertThat(findResult.getUserId()).isEqualTo("id");
+        assertThat(findResult.getMembershipName()).isEqualTo(MembershipType.NAVER);
+        assertThat(findResult.getPoint()).isEqualTo(10000);
 
     }
 }
