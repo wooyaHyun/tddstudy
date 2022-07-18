@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 //@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class MembershipRepositoryTest {
 
     @Autowired
