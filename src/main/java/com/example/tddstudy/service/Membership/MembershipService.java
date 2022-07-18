@@ -12,12 +12,17 @@ public class MembershipService {
 
     private final MembershipRepository membershipRepository;
 
-    public Membership addMembership(final String userId, final MembershipType membershipType, final int point){
+    public int addMembership(final String userId, final MembershipType membershipType, final int point){
         final Membership result = membershipRepository.findByUserIdAndMembershipType(userId, membershipType);
         if(result != null){
             throw new MembershipException(MembershipErrorResult.DUPLICATED_MEMBERSHIP_REGISTER);
         }
+        final Membership membership = Membership.builder()
+                .userId(userId)
+                .point(point)
+                .membershipName(membershipType)
+                .build();
 
-        return null;
+        return membershipRepository.save(membership);
     }
 }

@@ -11,9 +11,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Member;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * packageName : com.example.tddstudy.service.Membership
@@ -61,14 +64,27 @@ public class MembershipServiceTest {
     void 맴버쉽_등록_성공(){
         //given
         doReturn(null).when(membershipRepository).findByUserIdAndMembershipType(userId, membershipType);
+        doReturn(1).when(membershipRepository).save(any(Membership.class));
 
         //when
-
+        final int result = target.addMembership(userId, membershipType, point);
 
         //then
-
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(1);
 
         //verify
+        verify(membershipRepository, times(1)).findByUserIdAndMembershipType(userId, membershipType);
+        verify(membershipRepository, times(1)).save(any(Membership.class));
+
+    }
+
+    private Membership membership(){
+        return Membership.builder()
+                .membershipName(MembershipType.NAVER)
+                .userId(userId)
+                .point(point)
+                .build();
     }
 
 }
