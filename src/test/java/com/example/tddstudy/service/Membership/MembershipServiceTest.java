@@ -2,6 +2,7 @@ package com.example.tddstudy.service.Membership;
 
 import com.example.tddstudy.domain.Membership.MembershipRepository;
 import com.example.tddstudy.domain.Membership.MembershipType;
+import com.example.tddstudy.web.dto.MemebershipDetailResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +40,8 @@ public class MembershipServiceTest {
 
     @Mock
     private MembershipRepository membershipRepository;
+
+
 
     private final String userId = "id";
     private final MembershipType membershipType = MembershipType.NAVER;
@@ -78,4 +83,20 @@ public class MembershipServiceTest {
 
     }
 
+    @DisplayName("멤버십 목록 조회")
+    @Test
+    void 멤버십목록조회() {
+        //given
+        Map<String, Object> tmp1 = new HashMap<>();
+        Map<String, Object> tmp2 = new HashMap<>();
+        doReturn(Arrays.asList(tmp1, tmp2)).when(membershipRepository).findAllByUserId("userId");
+
+        //when
+        final List<MemebershipDetailResponseDto> result = target.getMembershipList("userId");
+
+        //then
+        assertThat(result.size()).isEqualTo(2);
+
+
+    }
 }

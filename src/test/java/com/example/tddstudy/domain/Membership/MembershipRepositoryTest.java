@@ -1,10 +1,12 @@
 package com.example.tddstudy.domain.Membership;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,6 +55,46 @@ public class MembershipRepositoryTest {
         assertThat(findResult.get("USER_ID")).isEqualTo("id");
         assertThat(findResult.get("MEMBERSHIP_NAME")).isEqualTo(String.valueOf(MembershipType.NAVER));
         assertThat(findResult.get("POINT")).isEqualTo(10000);
+
+    }
+
+    @DisplayName("멤버십 조회_ 사이즈가 0인 경우")
+    @Test
+    void 멤버십조회_사이즈가0() {
+        //given
+
+
+        //when
+        List<?> result = membershipRepository.findAllByUserId("userId");
+
+        //then
+        assertThat(result.size()).isEqualTo(0);
+
+
+    }
+
+    @DisplayName("멤버십 조회_사이즈가 2인경우")
+    @Test
+    void 멤버십조회_사이즈가2() {
+        //given
+        final Map<String, Object> naverMembership  = new HashMap<>();
+        naverMembership.put("userId", "userId");
+        naverMembership.put("membershipName", MembershipType.NAVER);
+        naverMembership.put("point", 10000);
+
+        final Map<String, Object> kakaoMembership  = new HashMap<>();
+        kakaoMembership.put("userId", "userId");
+        kakaoMembership.put("membershipName", MembershipType.KAKAO);
+        kakaoMembership.put("point", 10000);
+
+        membershipRepository.save(naverMembership);
+        membershipRepository.save(kakaoMembership);
+
+        //when
+        List<Map<String, Object>> result = membershipRepository.findAllByUserId("userId");
+
+        //then
+        assertThat(result.size()).isEqualTo(2);
 
     }
 }
