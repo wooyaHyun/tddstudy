@@ -21,4 +21,6 @@ public interface MembershipRepository {
     @Select("SELECT * FROM MEMBERSHIP WHERE USER_ID=#{userId}")
     public List<Map<String, Object>> findAllByUserId(@Param("userId") String userId);
 
+    @Select("SELECT * FROM MEMBERSHIP WHERE ID=#{id}")
+    public Map<String, Object> findById(@Param("id") Long id);
 }

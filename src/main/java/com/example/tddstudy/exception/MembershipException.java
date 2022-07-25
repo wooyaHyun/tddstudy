@@ -1,4 +1,4 @@
-package com.example.tddstudy.service.Membership;
+package com.example.tddstudy.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -2,13 +2,16 @@ package com.example.tddstudy.service.Membership;
 
 import com.example.tddstudy.domain.Membership.MembershipRepository;
 import com.example.tddstudy.domain.Membership.MembershipType;
-import com.example.tddstudy.web.dto.MemebershipDetailResponseDto;
+import com.example.tddstudy.exception.MembershipErrorResult;
+import com.example.tddstudy.exception.MembershipException;
+import com.example.tddstudy.web.dto.MembershipDetailResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,14 +34,30 @@ public class MembershipService {
         return membershipRepository.save(param);
     }
 
-    public List<MemebershipDetailResponseDto> getMembershipList (final String userId){
+    public List<MembershipDetailResponseDto> getMembershipList (final String userId){
         final List<Map<String, Object>> membershipList = membershipRepository.findAllByUserId(userId);
         return membershipList.stream()
-                .map(v -> MemebershipDetailResponseDto.builder()
+                .map(v -> MembershipDetailResponseDto.builder()
                         .id((Long)v.get("ID"))
                         .userId((String)v.get("USER_ID"))
                         .membershipType((MembershipType) v.get("MEMBERSHIP_NAME"))
+                        .point((int)v.getOrDefault("POINT", 0))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public MembershipDetailResponseDto getMembership(final Long membershipId, final String userId){
+        final Optional<Map<String, Object>> optionalMembership = Optional.ofNullable(membershipRepository.findById(membershipId));
+        final Map<String, Object> membership = optionalMembership.orElseThrow(() -> new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND));
+        //final Map<String, Object> membership = membershipRepository.findById(membershipId);
+
+        if(!membership.get("USER_ID").equals(userId)){
+            throw new MembershipException(MembershipErrorResult.NOT_MEMBERSHIP_OWNER);
+        }
+        return MembershipDetailResponseDto.builder()
+                .id((Long)membership.get("ID"))
+                .membershipType((MembershipType) membership.get("MEMBERSHIP_NAME"))
+                .point((int)membership.get("POINT"))
+                .build();
     }
 }

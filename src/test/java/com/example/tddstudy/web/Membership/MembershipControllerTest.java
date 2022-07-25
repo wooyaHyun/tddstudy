@@ -1,14 +1,12 @@
 package com.example.tddstudy.web.Membership;
 
 import com.example.tddstudy.domain.Membership.MembershipType;
-import com.example.tddstudy.service.Membership.MembershipErrorResult;
-import com.example.tddstudy.service.Membership.MembershipException;
+import com.example.tddstudy.exception.MembershipErrorResult;
+import com.example.tddstudy.exception.MembershipException;
 import com.example.tddstudy.service.Membership.MembershipService;
 import com.example.tddstudy.web.dto.MembershipRequestDto;
-import com.example.tddstudy.web.dto.MembershipResponseDto;
-import com.example.tddstudy.web.dto.MemebershipDetailResponseDto;
+import com.example.tddstudy.web.dto.MembershipDetailResponseDto;
 import com.google.gson.Gson;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,17 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.xml.transform.Result;
-import java.lang.reflect.Member;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -151,9 +143,9 @@ public class MembershipControllerTest {
         // given
         final String url = "/api/v1/memberships";
         doReturn(Arrays.asList(
-                MemebershipDetailResponseDto.builder().build(),
-                MemebershipDetailResponseDto.builder().build(),
-                MemebershipDetailResponseDto.builder().build()
+                MembershipDetailResponseDto.builder().build(),
+                MembershipDetailResponseDto.builder().build(),
+                MembershipDetailResponseDto.builder().build()
         )).when(membershipService).getMembershipList("12345");
 
 
@@ -167,5 +159,38 @@ public class MembershipControllerTest {
         resultActions.andExpect(status().isOk());
     }
 
+    @DisplayName("멤버십 상세조회 실패_사용자식별 값이 헤더에 없음")
+    @Test
+    void 멤버십상세조회실패_사용자식별값이헤더에없음() throws Exception {
+        //given
+        final String url = "/api/v1/memberships";
 
+        //when
+        final ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.get(url)
+        );
+
+        //then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("멤버십 상세조회 실패_멤버십이 존재하지 않음")
+    @Test
+    void 멤버십상세조회실패_멤버십이존재하지않음() throws Exception {
+        //given
+        final String url = "/api/v1/memberships/-1";
+        doThrow(new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND))
+                .when(membershipService)
+                .getMembership(-1L, "12345");
+
+        //when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .header("X-USER-ID", "12345")
+        );
+
+        //then
+        resultActions.andExpect(status().isNotFound());
+
+    }
 }

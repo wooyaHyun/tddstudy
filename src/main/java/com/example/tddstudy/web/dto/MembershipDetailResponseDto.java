@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Builder
 @RequiredArgsConstructor
-public class MemebershipDetailResponseDto {
+public class MembershipDetailResponseDto {
     private final Long id;
     private final String userId;
     private final MembershipType membershipType;
